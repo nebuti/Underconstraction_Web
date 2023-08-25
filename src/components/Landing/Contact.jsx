@@ -1,7 +1,8 @@
-import { Facebook, Instagram, LocalPhone, LocationOn, Mail, Telegram, YouTube } from "@mui/icons-material";
+import React, { useState } from "react";
 import {
   Box,
   Button,
+  Dialog,
   Divider,
   Icon,
   Stack,
@@ -9,9 +10,47 @@ import {
   TextareaAutosize,
   Typography,
 } from "@mui/material";
-import React from "react";
+import axios from "axios";
+import {
+  Facebook,
+  LocalPhone,
+  LocationOn,
+  Mail,
+  Telegram,
+  YouTube,
+} from "@mui/icons-material";
 
 const Contact = () => {
+  const [submissionStatus, setSubmissionStatus] = useState(null);
+  const [openSuccessDialog, setOpenSuccessDialog] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const name = event.target.name.value;
+    const email = event.target.email.value;
+    const message = event.target.Message.value;
+
+    try {
+      const response = await axios.post("http://localhost:8000/feed/feedback", {
+        name,
+        email,
+        message,
+      });
+
+      console.log("Response:", response.data);
+      setSubmissionStatus("success");
+      setOpenSuccessDialog(true); // Open success dialog
+    } catch (error) {
+      console.error("Error:", error);
+      setSubmissionStatus("error");
+    }
+  };
+
+  const handleCloseSuccessDialog = () => {
+    setOpenSuccessDialog(false); // Close success dialog
+  };
+
   return (
     <Stack
       sx={{ padding: "1rem 6%", backgroundColor: "#001F3F90", width: "100%" }}
@@ -24,6 +63,30 @@ const Contact = () => {
         Contact Us
       </Typography>
       <Stack
+      direction="row"
+      alignItems="stretch"
+      justifyContent="center"
+      sx={{ width: '70%', backgroundColor: '#f2f2f2', padding: '20px' }}
+      flexWrap="wrap"
+    >
+      <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+        <h2 style={{ marginBottom: '10px' }}>Welcome to Our Online Platform</h2>
+        <p style={{ fontSize: '16px', marginBottom: '20px' }}>Explore our platform for all your needs!</p>
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
+          <li style={{ marginBottom: '10px' }}>
+            <a href="link-to-android-app" style={{ textDecoration: 'none', color: '#007bff' }}>📱 Android App</a> - Access on your Android device
+          </li>
+          <li style={{ marginBottom: '10px' }}>
+            <a href="link-to-ios-app" style={{ textDecoration: 'none', color: '#007bff' }}>🍏 iOS App</a> - Enjoy on your iOS device
+          </li>
+          <li>
+            <a href="link-to-desktop-app" style={{ textDecoration: 'none', color: '#007bff' }}>💻 Desktop App</a> - Experience on your computer
+          </li>
+        </ul>
+      </div>
+    </Stack>
+
+      <Stack
         direction={"row"}
         alignItems={"stretch"}
         justifyContent={"center"}
@@ -32,6 +95,7 @@ const Contact = () => {
       >
         <Box
           component={"form"}
+          onSubmit={handleSubmit}
           sx={{
             backgroundColor: "#FFFFFF",
             flex: "1 1 50%",
@@ -119,8 +183,31 @@ const Contact = () => {
             <Button variant="contained" type="submit">
               Send
             </Button>
+             <Dialog
+              open={openSuccessDialog}
+              onClose={handleCloseSuccessDialog}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <Box sx={{ p: 2 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Message sent successfully!
+                </Typography>
+                <Typography>
+                  Thank you for reaching out. We'll get back to you soon.
+                </Typography>
+                <Button
+                  onClick={handleCloseSuccessDialog}
+                  color="primary"
+                  autoFocus
+                >
+                  Close
+                </Button>
+              </Box>
+            </Dialog>
           </Stack>
         </Box>
+
         <Stack
           flex={"1 1 50%"}
           sx={{
@@ -133,55 +220,64 @@ const Contact = () => {
           gap={3}
           alignItems={"center"}
         >
+       
           <Stack direction={"column"} gap={3}>
-            <Stack direction={"row"} gap={2}>
-              <Icon>
-                <LocationOn sx={{ color: "#FFFFFF" }} />
-              </Icon>
-              <Typography>Addis Ababa, 22 </Typography>
-            </Stack>
-            <Stack direction={"row"} gap={2}>
-              <Icon>
-                <LocalPhone sx={{ color: "#FFFFFF" }} />
-              </Icon>
-              <Typography>+251943013372</Typography>
-            </Stack>
-            <Stack direction={"row"} gap={2}>
-              <Icon>
-                <Mail sx={{ color: "#FFFFFF" }} />
-              </Icon>
-              <Typography>ayzotdams@gmail.com </Typography>
-            </Stack>
-            <Divider
-              sx={{ width: "80%", height: ".2vh", backgroundColor: "gray" , margin:"0 auto"}}
-            />
-            <Stack direction={"row"} gap={2}>
-              <Icon>
-                <Facebook sx={{ color: "#FFFFFF" }} />
-              </Icon>
-              <Typography>ayzotdams</Typography>
-            </Stack>
-            <Stack direction={"row"} gap={2}>
-              <Icon>
-                <YouTube sx={{ color: "#FFFFFF" }} />
-              </Icon>
-              <Typography>ayzotdams</Typography>
-            </Stack>
-            <Stack direction={"row"} gap={2}>
-              <Icon>
-                <Instagram sx={{ color: "#FFFFFF" }} />
-              </Icon>
-              <Typography>ayzotdams</Typography>
-            </Stack>
-            <Stack direction={"row"} gap={2}>
-              <Icon>
-                <Telegram sx={{ color: "#FFFFFF" }} />
-              </Icon>
-              <Typography>@ayzotdams</Typography>
-            </Stack>
-          </Stack>
+          
+
+  <Stack direction={"row"} gap={2}>
+    <Icon>
+      <LocationOn sx={{ color: "#FFFFFF" }} />
+    </Icon>
+    <Typography><a href="https://maps.example.com/AddisAbaba">Addis Ababa, 22</a></Typography>
+  </Stack>
+  <Stack direction={"row"} gap={2}>
+    <Icon>
+      <LocalPhone sx={{ color: "#FFFFFF" }} />
+    </Icon>
+    <Typography><a href="tel:+251943013372">+251943013372</a></Typography>
+  </Stack>
+  <Stack direction={"row"} gap={2}>
+    <Icon>
+      <Mail sx={{ color: "#FFFFFF" }} />
+    </Icon>
+    <Typography><a href="mailto:ayzotdams@gmail.com">ayzotdams@gmail.com</a></Typography>
+  </Stack>
+  <Divider
+    sx={{ width: "80%", height: ".2vh", backgroundColor: "gray", margin: "0 auto" }}
+  />
+  <Stack direction={"row"} gap={2}>
+    <Icon>
+      <Facebook sx={{ color: "#FFFFFF" }} />
+    </Icon>
+    <Typography><a href="http://facebook.com/ayzotdms">ayzotdms</a></Typography>
+  </Stack>
+  <Stack direction={"row"} gap={2}>
+    <Icon>
+      <YouTube sx={{ color: "#FFFFFF" }} />
+    </Icon>
+    <Typography><a href="https://youtube.com/@ayzotdm">ayzotdm</a></Typography>
+  </Stack>
+  <Stack direction={"row"} gap={2}>
+  <img
+    src="https://cdn4.iconfinder.com/data/icons/social-media-flat-7/64/Social-media_Tiktok-512.png"
+    alt="TikTok Icon"
+    style={{ width: 24, height: 24, color: "#FFFFFF" }}
+  />
+  <Typography><a href="https://www.tiktok.com/@ayzotdm">ayzotdams</a></Typography>
+</Stack>
+
+  <Stack direction={"row"} gap={2}>
+    <Icon>
+      <Telegram sx={{ color: "#FFFFFF" }} />
+    </Icon>
+    <Typography><a href="https://t.me/ayzotdms">@ayzotdams</a></Typography>
+  </Stack>
+</Stack>
+
         </Stack>
+       
       </Stack>
+      
     </Stack>
   );
 };
